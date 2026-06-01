@@ -162,11 +162,42 @@ const createNewSession = () => {
       };
       addMessage(assistantMessage);
 
-      // Auto-refresh sessions after 10 seconds to pick up AI-generated title
-      // (Title generation makes OpenAI API call which takes 5-8 seconds)
-      setTimeout(() => {
-        loadSessions();
-      }, 10000);
+      // Poll for AI-generated title for new sessions
+      // Title generation takes 5-8 seconds, poll every 2s for up to 20s
+      let pollCount = 0;
+      const maxPolls = 10; // 10 polls × 2s = 20s max
+      
+      const pollForTitle = async () => {
+        pollCount++;
+        
+        try {
+          const updatedSessions = await api.getSessions();
+          const updatedSession = updatedSessions.sessions.find(
+            (s: Session) => s.sessionId === response.sessionId
+          );
+          
+          if (updatedSession?.title) {
+            // Title found! Update sessions list
+            setSessions(prev => prev.map(s => 
+              s.sessionId === response.sessionId 
+                ? { ...s, title: updatedSession.title }
+                : s
+            ));
+            // Stop polling
+            return;
+          }
+        } catch (error) {
+          console.error('Failed to poll for title:', error);
+        }
+        
+        // Continue polling if we haven't found the title and haven't exceeded max polls
+        if (pollCount < maxPolls) {
+          setTimeout(pollForTitle, 2000);
+        }
+      };
+      
+      // Start polling after 2 seconds (give backend time to start title generation)
+      setTimeout(pollForTitle, 2000);
     } catch (error: any) {
       console.error('Failed to send message:', error);
       
