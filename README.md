@@ -1,4 +1,4 @@
-# Peregrine AI - Frontend UI
+# Peregrine Chatbot
 
 Modern web interface for the Peregrine AI Agent system.
 
