@@ -70,7 +70,7 @@ export default function ChatPage() {
       
       // Auto-load first session with messages
       if (!currentSession && userSessions.length > 0) {
-        const sessionsWithMessages = userSessions.filter(s => s.messageCount && s.messageCount > 0);
+        const sessionsWithMessages = userSessions.filter((s: Session) => s.messageCount && s.messageCount > 0);
         if (sessionsWithMessages.length > 0) {
           // Load full session details with messages
           await loadSessionDetails(sessionsWithMessages[0].sessionId);
