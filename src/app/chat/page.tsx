@@ -17,7 +17,8 @@ import {
   MessageSquare,
   Loader2,
   User,
-  Bot
+  Bot,
+  Upload
 } from 'lucide-react';
 import type { Message, Session, ChatResponse } from '@/types';
 
@@ -252,10 +253,19 @@ const createNewSession = () => {
           
           <Button 
             onClick={createNewSession}
-            className="w-full bg-purple-500 hover:bg-purple-600"
+            className="w-full bg-purple-500 hover:bg-purple-600 mb-2"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Chat
+          </Button>
+          
+          <Button 
+            onClick={() => router.push('/documents')}
+            variant="outline"
+            className="w-full border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Upload Documents
           </Button>
         </div>
 

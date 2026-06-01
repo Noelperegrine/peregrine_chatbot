@@ -141,6 +141,39 @@ class ApiClient {
     const response = await this.client.post('/api/cache/clear');
     return response.data;
   }
+
+  // Document Upload & Ingestion
+  async uploadDocument(
+    file: File,
+    onProgress?: (progress: number) => void
+  ): Promise<{ chunks: number; embeddings: number; documentId: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await this.client.post('/api/documents/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percentCompleted);
+        }
+      },
+    });
+
+    return response.data;
+  }
+
+  async getDocuments() {
+    const response = await this.client.get('/api/documents');
+    return response.data;
+  }
+
+  async deleteDocument(documentId: string) {
+    const response = await this.client.delete(`/api/documents/${documentId}`);
+    return response.data;
+  }
 }
 
 export const api = new ApiClient();
