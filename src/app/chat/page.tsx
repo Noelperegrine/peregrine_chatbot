@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { TypingIndicator } from '@/components/ui/typing-indicator';
+import { MarkdownMessage } from '@/components/markdown/MarkdownMessage';
 import { 
   Send, 
   Brain, 
@@ -372,9 +373,13 @@ const createNewSession = () => {
                       : 'bg-slate-800/50 border-slate-700'
                   }`}>
                     <div className="p-4">
-                      <div className="text-white whitespace-pre-wrap">
-                        {message.content}
-                      </div>
+                      {message.role === 'assistant' ? (
+                        <MarkdownMessage content={message.content} />
+                      ) : (
+                        <div className="text-white whitespace-pre-wrap">
+                          {message.content}
+                        </div>
+                      )}
                       
                       {message.sources && message.sources.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-slate-700">
