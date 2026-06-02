@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Upload, FileText, Loader2, Check, X, AlertCircle } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,19 +11,48 @@ import { api } from '@/lib/api'
 
 interface UploadedDocument {
   id: string
-  filename: string
-  size: number
+  filename?: string
+  size?: number
   status: 'uploading' | 'processing' | 'success' | 'error'
-  progress: number
+  progress?: number
   chunks?: number
   embeddings?: number
   error?: string
+  uploadedAt?: string
+  uploadedBy?: string
+  docType?: string
 }
 
 export default function DocumentsPage() {
   const router = useRouter()
   const [documents, setDocuments] = useState<UploadedDocument[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Fetch existing documents on mount
+  useEffect(() => {
+    fetchDocuments()
+  }, [])
+
+  const fetchDocuments = async () => {
+    try {
+      setIsLoading(true)
+      const response = await api.getDocuments()
+      const existingDocs: UploadedDocument[] = response.documents.map((doc: any) => ({
+        id: doc.id,
+        status: 'success' as const,
+        chunks: doc.chunks,
+        uploadedAt: doc.uploadedAt,
+        uploadedBy: doc.uploadedBy,
+        docType: doc.docType
+      }))
+      setDocuments(existingDocs)
+    } catch (error) {
+      console.error('Failed to fetch documents:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -89,6 +118,9 @@ export default function DocumentsPage() {
               : d
           )
         )
+
+        // Refresh the documents list to get the persisted data
+        await fetchDocuments()
       } catch (error) {
         // Update with error
         setDocuments(prev =>
@@ -203,12 +235,19 @@ export default function DocumentsPage() {
         </Card>
 
         {/* Documents List */}
-        {documents.length > 0 && (
+        {isLoading ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-500" />
+              <p className="text-gray-600 dark:text-gray-400">Loading documents...</p>
+            </CardContent>
+          </Card>
+        ) : documents.length > 0 ? (
           <Card>
             <CardHeader>
-              <CardTitle>Upload Progress</CardTitle>
+              <CardTitle>Your Documents</CardTitle>
               <CardDescription>
-                {documents.filter(d => d.status === 'success').length} of {documents.length} completed
+                {documents.filter(d => d.status === 'success').length} document{documents.filter(d => d.status === 'success').length !== 1 ? 's' : ''} ingested
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -221,18 +260,20 @@ export default function DocumentsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <FileText className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                            <p className="font-medium truncate">{doc.filename}</p>
+                            <p className="font-medium truncate">{doc.filename || doc.id}</p>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {formatFileSize(doc.size)}
-                          </p>
+                          {doc.size && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {formatFileSize(doc.size)}
+                            </p>
+                          )}
                         </div>
                       </div>
                       {getStatusBadge(doc.status)}
                     </div>
 
                     {/* Progress Bar */}
-                    {(doc.status === 'uploading' || doc.status === 'processing') && (
+                    {(doc.status === 'uploading' || doc.status === 'processing') && doc.progress !== undefined && (
                       <div className="mb-3">
                         <Progress value={doc.progress} className="h-2" />
                         <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
@@ -265,6 +306,14 @@ export default function DocumentsPage() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="p-12 text-center text-gray-600 dark:text-gray-400">
+              <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+              <p>No documents uploaded yet</p>
+              <p className="text-sm mt-1">Upload your first document to get started</p>
             </CardContent>
           </Card>
         )}
