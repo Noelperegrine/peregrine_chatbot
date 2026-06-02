@@ -179,7 +179,7 @@ const createNewSession = () => {
           
           if (updatedSession?.title) {
             // Title found! Update sessions list
-            setSessions(prev => prev.map(s => 
+            setSessions(sessions.map((s: Session) => 
               s.sessionId === response.sessionId 
                 ? { ...s, title: updatedSession.title }
                 : s
