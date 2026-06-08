@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Peregrine AI - Intelligent Business Assistant",
+  title: "Jane AI - Intelligent Business Assistant",
   description: "AI-powered business insights and financial analysis",
 };
 

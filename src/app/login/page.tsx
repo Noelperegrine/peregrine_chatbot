@@ -63,7 +63,7 @@ export default function LoginPage() {
               <Brain className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Peregrine AI
+              Jane AI
             </h1>
           </div>
         </div>

@@ -249,7 +249,7 @@ const createNewSession = () => {
             <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
               <Brain className="h-5 w-5 text-white" />
             </div>
-            <span className="font-bold text-white">Peregrine AI</span>
+            <span className="font-bold text-white">Jane AI</span>
           </div>
           
           <Button 
@@ -343,7 +343,7 @@ const createNewSession = () => {
                   <Brain className="h-8 w-8 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">
-                  Welcome to Peregrine AI
+                  Welcome to Jane AI
                 </h2>
                 <p className="text-slate-400 max-w-md">
                   Your intelligent assistant for business insights, financial analysis, and data-driven decisions.
