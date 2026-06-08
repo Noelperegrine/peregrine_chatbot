@@ -123,19 +123,19 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
           
           // Lists
           ul: ({ node, children, ...props }: any) => (
-            <ul className="list-disc list-inside my-3 space-y-1 text-slate-200" {...props}>
+            <ul className="list-disc list-outside my-3 ml-6 space-y-2 text-slate-200" {...props}>
               {children}
             </ul>
           ),
           
           ol: ({ node, children, ...props }: any) => (
-            <ol className="list-decimal list-inside my-3 space-y-1 text-slate-200" {...props}>
+            <ol className="list-decimal list-outside my-3 ml-6 space-y-2 text-slate-200" {...props}>
               {children}
             </ol>
           ),
           
           li: ({ node, children, ...props }: any) => (
-            <li className="text-slate-200" {...props}>
+            <li className="text-slate-200 pl-2" {...props}>
               {children}
             </li>
           ),
