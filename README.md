@@ -1,6 +1,6 @@
-# Peregrine Chatbot
+# Jane AI
 
-Modern web interface for the Peregrine AI Agent system.
+Modern web interface for the Jane AI Agent system.
 
 **Framework:** Next.js 16.2.6 with Turbopack  
 **Port:** 3001  
